@@ -66,5 +66,9 @@ namespace ariel
 
         friend std::ostream &operator<<(std::ostream &os, const Fraction &frac);
         friend std::istream &operator>>(std::istream &is, Fraction &frac);
+
+        int gcd (int a, int b);
+        Fraction reduceFraction(Fraction frac);
+        
     };
 }

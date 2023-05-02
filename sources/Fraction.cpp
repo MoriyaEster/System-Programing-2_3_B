@@ -170,3 +170,25 @@ std::istream &ariel::operator>>(std::istream &is, Fraction &frac)
     return is;
 }
 
+
+Fraction ariel::Fraction::reduceFraction(Fraction frac){
+    int frac_nume = frac.getnumerator();
+    int frac_denom = frac.getdenominator();
+
+    int num_to_reduce = gcd(frac_nume, frac_denom);
+    
+    int new_frac_nume = frac_nume/num_to_reduce;
+    int new_frac_denom = frac_denom/num_to_reduce;
+
+    return Fraction(new_frac_nume, new_frac_denom);
+
+}
+
+
+int ariel::Fraction::gcd(int a, int b)
+{
+    if (b == 0) {
+        return a;
+    }
+    return gcd(b, a % b);
+}
