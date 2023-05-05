@@ -49,16 +49,17 @@ namespace ariel
         bool operator<=(const float other);
         bool operator>=(const float other);
 
-        friend Fraction& operator+(const float num, Fraction &frac);
-        friend Fraction& operator-(const float num, Fraction &frac);
-        friend Fraction& operator*(const float num, Fraction &frac);
-        friend Fraction& operator/(const float num, Fraction &frac);
-        friend bool operator==(const float num, Fraction &frac);
-        friend bool operator!=(const float num, Fraction &frac);
-        friend bool operator<(const float num, Fraction &frac);
-        friend bool operator>(const float num, Fraction &frac);
-        friend bool operator<=(const float num, Fraction &frac);
-        friend bool operator>=(const float num, Fraction &frac);
+
+        friend Fraction operator+(float num, const Fraction &frac);
+        friend Fraction operator-(float num, const Fraction &frac);
+        friend Fraction operator*(float num, const Fraction &frac);
+        friend Fraction operator/(float num, const Fraction &frac);
+        friend bool operator==(const float num, const Fraction &frac);
+        friend bool operator!=(const float num, const Fraction &frac);
+        friend bool operator<(const float num, const Fraction &frac);
+        friend bool operator>(const float num, const Fraction &frac);
+        friend bool operator<=(const float num, const Fraction &frac);
+        friend bool operator>=(const float num, const Fraction &frac);
 
         Fraction& operator++();
         Fraction& operator--();
