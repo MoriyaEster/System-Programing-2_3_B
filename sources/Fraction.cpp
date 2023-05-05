@@ -115,19 +115,23 @@ bool Fraction::operator>=(const Fraction &other)
 
 Fraction Fraction::operator+(const float other)
 {
-    return Fraction(1, 1);
+    Fraction other_frac = Fraction(other);
+    return this->operator+(other_frac);
 }
 Fraction Fraction::operator-(const float other)
 {
-    return Fraction(1, 1);
+    Fraction other_frac = Fraction(other);
+    return this->operator-(other_frac);
 }
 Fraction Fraction::operator*(const float other)
 {
-    return Fraction(1, 1);
+    Fraction other_frac = Fraction(other);
+    return this->operator*(other_frac);
 }
 Fraction Fraction::operator/(const float other)
 {
-    return Fraction(1, 1);
+    Fraction other_frac = Fraction(other);
+    return this->operator/(other_frac);
 }
 
 bool Fraction::operator==(const float other)
