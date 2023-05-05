@@ -5,8 +5,8 @@
 using namespace ariel;
 
 Fraction::Fraction(float num)
-    : numerator(int(num)), denominator(int(num)) // must to change!!!
 {
+    float_to_fraction(num);
 }
 
 Fraction::Fraction(int _numerator, int _denominator)
@@ -14,12 +14,16 @@ Fraction::Fraction(int _numerator, int _denominator)
 {
 }
 
+Fraction::Fraction(double num){
+    Fraction(float(num));
+}
+
 Fraction Fraction::operator+(const Fraction &other)
 {
-    int this_nume = this->getnumerator();
-    int this_denom = this->getdenominator();
-    int other_nume = other.getnumerator();
-    int other_denom = other.getdenominator();
+    int this_nume = this->getNumerator();
+    int this_denom = this->getDenominator();
+    int other_nume = other.getNumerator();
+    int other_denom = other.getDenominator();
 
     int frac1_new_nume = this_nume * other_denom;
     int frac1_new_denom = this_denom * other_denom;
@@ -27,15 +31,14 @@ Fraction Fraction::operator+(const Fraction &other)
     int frac2_new_denom = other_denom * this_denom;
 
     Fraction new_frac = Fraction(frac1_new_nume + frac2_new_nume, frac1_new_denom);
-
     return new_frac;
 }
 Fraction Fraction::operator-(const Fraction &other)
 {
-    int this_nume = this->getnumerator();
-    int this_denom = this->getdenominator();
-    int other_nume = other.getnumerator();
-    int other_denom = other.getdenominator();
+    int this_nume = this->getNumerator();
+    int this_denom = this->getDenominator();
+    int other_nume = other.getNumerator();
+    int other_denom = other.getDenominator();
 
     int frac1_new_nume = this_nume * other_denom;
     int frac1_new_denom = this_denom * other_denom;
@@ -43,27 +46,27 @@ Fraction Fraction::operator-(const Fraction &other)
     int frac2_new_denom = other_denom * this_denom;
 
     Fraction new_frac = Fraction(frac1_new_nume - frac2_new_nume, frac1_new_denom);
-
     return new_frac;
 }
 Fraction Fraction::operator*(const Fraction &other)
 {
-    int this_nume = this->getnumerator();
-    int this_denom = this->getdenominator();
-    int other_nume = other.getnumerator();
-    int other_denom = other.getdenominator();
+    int this_nume = this->getNumerator();
+    int this_denom = this->getDenominator();
+    int other_nume = other.getNumerator();
+    int other_denom = other.getDenominator();
 
     Fraction new_frac = Fraction(this_nume * other_nume, this_denom * other_denom);
-
+    return new_frac;
 }
 Fraction Fraction::operator/(const Fraction &other)
 {
-    int this_nume = this->getnumerator();
-    int this_denom = this->getdenominator();
-    int other_nume = other.getnumerator();
-    int other_denom = other.getdenominator();
+    int this_nume = this->getNumerator();
+    int this_denom = this->getDenominator();
+    int other_nume = other.getNumerator();
+    int other_denom = other.getDenominator();
 
     Fraction new_frac = Fraction(this_nume * other_denom, this_denom * other_nume);
+    return new_frac;
 }
 
 bool Fraction::operator==(const Fraction &other)
@@ -194,26 +197,13 @@ Fraction Fraction::operator--(int num)
 
 std::ostream &ariel::operator<<(std::ostream &os, const Fraction &frac)
 {
-    os << frac.getnumerator() << "/" << frac.getdenominator();
+    os << frac.getNumerator() << "/" << frac.getDenominator();
     return os;
 }
 
 std::istream &ariel::operator>>(std::istream &is, Fraction &frac)
 {
     return is;
-}
-
-Fraction ariel::Fraction::reduceFraction(Fraction frac)
-{
-    int frac_nume = frac.getnumerator();
-    int frac_denom = frac.getdenominator();
-
-    int num_to_reduce = gcd(frac_nume, frac_denom);
-
-    int new_frac_nume = frac_nume / num_to_reduce;
-    int new_frac_denom = frac_denom / num_to_reduce;
-
-    return Fraction(new_frac_nume, new_frac_denom);
 }
 
 int ariel::Fraction::gcd(int a, int b)
@@ -223,4 +213,25 @@ int ariel::Fraction::gcd(int a, int b)
         return a;
     }
     return gcd(b, a % b);
+}
+
+Fraction ariel::Fraction::reduceFraction(Fraction frac)
+{
+    int frac_nume = frac.getNumerator();
+    int frac_denom = frac.getDenominator();
+
+    int num_to_reduce = gcd(frac_nume, frac_denom);
+
+    int new_frac_nume = frac_nume / num_to_reduce;
+    int new_frac_denom = frac_denom / num_to_reduce;
+
+    return Fraction(new_frac_nume, new_frac_denom);
+}
+
+Fraction ariel::Fraction::float_to_fraction(float num)
+{
+    int new_num = num * 1000;
+    Fraction new_frac = Fraction(new_num, 1000);
+    Fraction reduc_frac = reduceFraction(new_frac); 
+    return reduc_frac;
 }

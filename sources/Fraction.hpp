@@ -15,12 +15,13 @@ namespace ariel
     public:
         Fraction(int _numerator, int denominator);
         Fraction(float num);
+        Fraction (double num);
 
-        int getnumerator() const
+        int getNumerator() const
         {
             return numerator;
         }
-        int getdenominator() const
+        int getDenominator() const
         {
             return denominator;
         }
@@ -69,6 +70,6 @@ namespace ariel
 
         int gcd (int a, int b);
         Fraction reduceFraction(Fraction frac);
-        
+        Fraction float_to_fraction(float num);
     };
 }
