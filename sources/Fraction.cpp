@@ -14,7 +14,8 @@ Fraction::Fraction(int _numerator, int _denominator)
 {
 }
 
-Fraction::Fraction(double num){
+Fraction::Fraction(double num)
+{
     Fraction(float(num));
 }
 
@@ -71,27 +72,45 @@ Fraction Fraction::operator/(const Fraction &other)
 
 bool Fraction::operator==(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) == 0)
+        return true;
+    else
+        return false;
 }
 bool Fraction::operator!=(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) != 0)
+        return true;
+    else
+        return false;
 }
 bool Fraction::operator<(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) < 0)
+        return true;
+    else
+        return false;
 }
 bool Fraction::operator>(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) > 0)
+        return true;
+    else
+        return false;
 }
 bool Fraction::operator<=(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) <= 0)
+        return true;
+    else
+        return false;
 }
 bool Fraction::operator>=(const Fraction &other)
 {
-    return true;
+    if (this->operator-(other) >= 0)
+        return true;
+    else
+        return false;
 }
 
 Fraction Fraction::operator+(const float other)
@@ -232,6 +251,6 @@ Fraction ariel::Fraction::float_to_fraction(float num)
 {
     int new_num = num * 1000;
     Fraction new_frac = Fraction(new_num, 1000);
-    Fraction reduc_frac = reduceFraction(new_frac); 
+    Fraction reduc_frac = reduceFraction(new_frac);
     return reduc_frac;
 }
