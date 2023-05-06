@@ -20,7 +20,6 @@ TEST_CASE("Fraction object initialization & Getters return expected values") {
 
     // Check that the float constractor's fields are like expected
     Fraction b(0.3333);
-    cout << "b.getNumerator = " << b.getNumerator() << " b.getDenominator = " << b.getDenominator() << endl;
     CHECK(((b.getNumerator() == 333) && (b.getDenominator() == 1000)));
 
     // Check that a Fraction can't be created if denominator is 0

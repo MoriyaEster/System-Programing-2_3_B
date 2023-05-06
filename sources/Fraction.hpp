@@ -35,22 +35,22 @@ namespace ariel
         {
             this->numerator = num;
         }
-        void setDenominator(int num) 
+        void setDenominator(int num)
         {
             this->denominator = num;
         }
 
         // Operators
-        Fraction operator+(const Fraction &other);
-        Fraction operator-(const Fraction &other);
-        Fraction operator*(const Fraction &other);
-        Fraction operator/(const Fraction &other);
-        bool operator==(const Fraction &other);
-        bool operator!=(const Fraction &other);
-        bool operator<(const Fraction &other);
-        bool operator>(const Fraction &other);
-        bool operator<=(const Fraction &other);
-        bool operator>=(const Fraction &other);
+        Fraction operator+(const Fraction &other) const;
+        Fraction operator-(const Fraction &other) const;
+        Fraction operator*(const Fraction &other) const;
+        Fraction operator/(const Fraction &other) const;
+        bool operator==(const Fraction &other) const;
+        bool operator!=(const Fraction &other) const;
+        bool operator<(const Fraction &other) const;
+        bool operator>(const Fraction &other) const;
+        bool operator<=(const Fraction &other) const;
+        bool operator>=(const Fraction &other) const;
 
         Fraction operator+(const float other);
         Fraction operator-(const float other);
@@ -82,8 +82,8 @@ namespace ariel
         friend std::ostream &operator<<(std::ostream &os, const Fraction &frac);
         friend std::istream &operator>>(std::istream &is, Fraction &frac);
 
-        int gcd(int a, int b);
-        Fraction reduceFraction(Fraction frac);
+        int gcd(int a, int b) const;
+        Fraction reduceFraction(const Fraction &frac) const;
         Fraction float_to_fraction(float num);
     };
 }
