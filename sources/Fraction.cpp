@@ -32,6 +32,11 @@ Fraction::Fraction(int _numerator, int _denominator)
     {
         throw invalid_argument("can't devide by zero");
     }
+    if (_denominator < 0)
+    {
+        _denominator *= -1;
+        _numerator *= -1;
+    }
 }
 
 Fraction::Fraction(double num)
@@ -50,7 +55,11 @@ Fraction Fraction::operator+(const Fraction &other) const
     {
         throw overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
-
+    if (new_denominator < 0)
+    {
+        new_denominator *= -1;
+        new_numerator *= -1;
+    }
     return reduceFraction(Fraction(new_numerator, new_denominator));
 }
 
@@ -62,10 +71,14 @@ Fraction Fraction::operator-(const Fraction &other) const
     {
         throw std::overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
-    Fraction new_frac = Fraction((int) new_nume,(int) new_denom);
-    return reduceFraction(new_frac);
-}
 
+    if (new_denom < 0)
+    {
+        new_denom *= -1;
+        new_nume *= -1;
+    }
+    return reduceFraction(Fraction((int)new_nume, (int)new_denom));
+}
 
 Fraction Fraction::operator*(const Fraction &other) const
 {
@@ -79,10 +92,13 @@ Fraction Fraction::operator*(const Fraction &other) const
         throw overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
 
-    Fraction new_frac((int)new_nume, (int)new_denom);
-    new_frac = reduceFraction(new_frac);
+    if (new_denom < 0)
+    {
+        new_denom *= -1;
+        new_nume *= -1;
+    }
 
-    return new_frac;
+    return reduceFraction(Fraction((int)new_nume, (int)new_denom));
 }
 
 Fraction Fraction::operator/(const Fraction &other) const
@@ -104,10 +120,14 @@ Fraction Fraction::operator/(const Fraction &other) const
         throw std::overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
 
-    Fraction new_frac = reduceFraction(Fraction((int)new_nume, (int)new_denom));
-    return new_frac;
-}
+    if (new_denom < 0)
+    {
+        new_denom *= -1;
+        new_nume *= -1;
+    }
 
+    return reduceFraction(Fraction((int)new_nume, (int)new_denom));
+}
 
 bool Fraction::operator==(const Fraction &other) const
 {
@@ -122,14 +142,13 @@ bool Fraction::operator!=(const Fraction &other) const
     return !(*this == other);
 }
 
-bool Fraction::operator<(const Fraction &other) const {
+bool Fraction::operator<(const Fraction &other) const
+{
 
     double this_value = (double)numerator / denominator;
     double other_value = (double)other.numerator / other.denominator;
     return this_value < other_value;
 }
-
-
 
 bool Fraction::operator>(const Fraction &other) const
 {
@@ -200,8 +219,6 @@ bool Fraction::operator>=(const float other)
 {
     return *this >= Fraction(other);
 }
-
-
 
 Fraction ariel::operator+(float num, const Fraction &frac)
 {
@@ -301,8 +318,6 @@ ostream &ariel::operator<<(ostream &os, const Fraction &frac)
     return os;
 }
 
-
-
 istream &ariel::operator>>(istream &is, Fraction &frac)
 {
     int numerator;
@@ -313,11 +328,16 @@ istream &ariel::operator>>(istream &is, Fraction &frac)
 
     if (denominator == 0)
     {
-        throw runtime_error("there are no argument");
+        throw runtime_error("there are no arguments");
     }
     frac.setNumerator(numerator);
     frac.setDenominator(denominator);
 
+    if (frac.getDenominator() < 0)
+    {
+        frac.setNumerator(numerator * -1);
+        frac.setDenominator(denominator * -1);
+    }
     return is;
 }
 
@@ -340,18 +360,11 @@ Fraction ariel::Fraction::reduceFraction(const Fraction &frac) const
     int new_frac_nume = frac_nume / num_to_reduce;
     int new_frac_denom = frac_denom / num_to_reduce;
 
-    return Fraction(new_frac_nume, new_frac_denom);
-}
-
-Fraction ariel::Fraction::float_to_fraction(float num)
-{
-    if (num == 0.0)
+    if (new_frac_denom < 0)
     {
-        return Fraction(0, 1);
+        new_frac_denom *= -1;
+        new_frac_nume *= -1;
     }
-    int new_num = num * 1000;
-    Fraction new_frac = Fraction(new_num, 1000);
-    Fraction reduc_frac = reduceFraction(new_frac);
-    cout << "reduc_frac.getNumerator = " << reduc_frac.getNumerator() << " reduc_frac.getDenominator = " << reduc_frac.getDenominator() << endl;
-    return reduc_frac;
+
+    return Fraction(new_frac_nume, new_frac_denom);
 }
