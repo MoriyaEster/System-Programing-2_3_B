@@ -26,17 +26,23 @@ Fraction::Fraction(float num)
 }
 
 Fraction::Fraction(int _numerator, int _denominator)
-    : numerator(_numerator), denominator(_denominator)
 {
+
     if (_denominator == 0)
     {
         throw invalid_argument("can't devide by zero");
     }
+
     if (_denominator < 0)
     {
         _denominator *= -1;
         _numerator *= -1;
     }
+
+    int gcd_value = abs(gcd(_numerator, _denominator));
+
+    numerator = _numerator / gcd_value;
+    denominator = _denominator / gcd_value;
 }
 
 Fraction::Fraction(double num)
@@ -46,9 +52,9 @@ Fraction::Fraction(double num)
 
 Fraction Fraction::operator+(const Fraction &other) const
 {
-    int lcm = (denominator * other.denominator) / gcd(denominator, other.denominator);
-    int new_numerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
-    int new_denominator = lcm;
+    long long lcm = (denominator * other.denominator) / gcd(denominator, other.denominator);
+    long long new_numerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
+    long long new_denominator = lcm;
 
     // Check for integer overflow before creating the new fraction object
     if (new_numerator > INT_MAX || new_numerator < INT_MIN || new_denominator > INT_MAX || new_denominator < INT_MIN)
@@ -60,7 +66,7 @@ Fraction Fraction::operator+(const Fraction &other) const
         new_denominator *= -1;
         new_numerator *= -1;
     }
-    return reduceFraction(Fraction(new_numerator, new_denominator));
+    return reduceFraction(Fraction((int)new_numerator, (int)new_denominator));
 }
 
 Fraction Fraction::operator-(const Fraction &other) const
@@ -105,12 +111,12 @@ Fraction Fraction::operator/(const Fraction &other) const
 {
     if (other.getNumerator() == 0)
     {
-        throw invalid_argument("can't devide by zero");
+        throw runtime_error("can't devide by zero");
     }
-    int this_nume = this->getNumerator();
-    int this_denom = this->getDenominator();
-    int other_nume = other.getNumerator();
-    int other_denom = other.getDenominator();
+    long long this_nume = this->getNumerator();
+    long long this_denom = this->getDenominator();
+    long long other_nume = other.getNumerator();
+    long long other_denom = other.getDenominator();
 
     long long new_nume = (long long)this_nume * other_denom;
     long long new_denom = (long long)this_denom * other_nume;
@@ -128,6 +134,8 @@ Fraction Fraction::operator/(const Fraction &other) const
 
     return reduceFraction(Fraction((int)new_nume, (int)new_denom));
 }
+
+// ************************************************************//
 
 bool Fraction::operator==(const Fraction &other) const
 {
@@ -165,6 +173,8 @@ bool Fraction::operator>=(const Fraction &other) const
     return (*this > other) || (*this == other);
 }
 
+// ************************************************************//
+
 Fraction Fraction::operator+(const float other)
 {
     Fraction other_frac = Fraction(other);
@@ -184,11 +194,13 @@ Fraction Fraction::operator/(const float other)
 {
     if (other == 0.0)
     {
-        throw std::invalid_argument("can't devide by zero");
+        throw std::runtime_error("can't devide by zero");
     }
     Fraction other_frac = Fraction(other);
     return this->operator/(other_frac);
 }
+
+// ************************************************************//
 
 bool Fraction::operator==(const float other)
 {
@@ -220,6 +232,8 @@ bool Fraction::operator>=(const float other)
     return *this >= Fraction(other);
 }
 
+// ************************************************************//
+
 Fraction ariel::operator+(float num, const Fraction &frac)
 {
     Fraction other_frac = Fraction(num);
@@ -239,11 +253,13 @@ Fraction ariel::operator/(const float num, const Fraction &frac)
 {
     if (frac.getNumerator() == 0)
     {
-        throw std::invalid_argument("can't devide by zero");
+        throw std::runtime_error("can't devide by zero");
     }
     Fraction other_frac = Fraction(num);
     return other_frac.operator/(frac);
 }
+
+// ************************************************************//
 
 bool ariel::operator==(const float num, const Fraction &frac)
 {
@@ -275,6 +291,8 @@ bool ariel::operator>=(const float num, const Fraction &frac)
     Fraction other_frac = Fraction(num);
     return other_frac.operator>=(frac);
 }
+
+// ************************************************************//
 
 Fraction &Fraction::operator++()
 {
@@ -312,8 +330,11 @@ Fraction Fraction::operator--(int num)
     return this_frac;
 }
 
+// ************************************************************//
+
 ostream &ariel::operator<<(ostream &os, const Fraction &frac)
 {
+
     os << frac.getNumerator() << "/" << frac.getDenominator();
     return os;
 }
@@ -341,6 +362,8 @@ istream &ariel::operator>>(istream &is, Fraction &frac)
     return is;
 }
 
+// ************************************************************//
+
 int ariel::Fraction::gcd(int a, int b) const
 {
     if (b == 0)
@@ -352,19 +375,15 @@ int ariel::Fraction::gcd(int a, int b) const
 
 Fraction ariel::Fraction::reduceFraction(const Fraction &frac) const
 {
-    int frac_nume = frac.getNumerator();
-    int frac_denom = frac.getDenominator();
+    int num = frac.getNumerator();
+    int den = frac.getDenominator();
 
-    int num_to_reduce = gcd(frac_nume, frac_denom);
-
-    int new_frac_nume = frac_nume / num_to_reduce;
-    int new_frac_denom = frac_denom / num_to_reduce;
-
-    if (new_frac_denom < 0)
+    if (den < 0)
     {
-        new_frac_denom *= -1;
-        new_frac_nume *= -1;
+        den *= -1;
+        num *= -1;
     }
+    int gcd_value = gcd(num, den);
 
-    return Fraction(new_frac_nume, new_frac_denom);
+    return Fraction(num / gcd_value, den / gcd_value);
 }

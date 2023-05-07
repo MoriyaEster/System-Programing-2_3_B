@@ -84,6 +84,5 @@ namespace ariel
 
         int gcd(int a, int b) const;
         Fraction reduceFraction(const Fraction &frac) const;
-        Fraction float_to_fraction(float num);
     };
 }
