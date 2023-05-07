@@ -41,10 +41,15 @@ Fraction::Fraction(double num)
 
 Fraction Fraction::operator+(const Fraction &other) const
 {
-
     int lcm = (denominator * other.denominator) / gcd(denominator, other.denominator);
     int new_numerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
     int new_denominator = lcm;
+
+    // Check for integer overflow before creating the new fraction object
+    if (new_numerator > INT_MAX || new_numerator < INT_MIN || new_denominator > INT_MAX || new_denominator < INT_MIN)
+    {
+        throw overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
+    }
 
     Fraction result(new_numerator, new_denominator);
     result = reduceFraction(result);
@@ -56,24 +61,23 @@ Fraction Fraction::operator-(const Fraction &other) const
 {
     long long new_nume = ((long long)numerator * other.denominator) - ((long long)other.numerator * denominator);
     long long new_denom = (long long)denominator * other.denominator;
-    Fraction new_frac = Fraction(new_nume, new_denom);
+    Fraction new_frac = Fraction((int) new_nume,(int) new_denom);
     return reduceFraction(new_frac);
 }
 
 Fraction Fraction::operator*(const Fraction &other) const
 {
-    // Multiply numerators and denominators
+
     long long new_nume = (long long)this->getNumerator() * (long long)other.getNumerator();
     long long new_denom = (long long)this->getDenominator() * (long long)other.getDenominator();
 
     // Check for overflow
     if (new_nume > INT_MAX || new_nume < INT_MIN || new_denom > INT_MAX || new_denom < INT_MIN)
     {
-        throw std::overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
+        throw overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
 
-    // Create and reduce new fraction
-    Fraction new_frac(new_nume, new_denom);
+    Fraction new_frac((int)new_nume, (int)new_denom);
     new_frac = reduceFraction(new_frac);
 
     return new_frac;
@@ -155,8 +159,6 @@ Fraction Fraction::operator/(const float other)
     return this->operator/(other_frac);
 }
 
-
-
 bool ariel::Fraction::operator==(const float other)
 {
     return *this == Fraction(other);
@@ -187,7 +189,6 @@ bool ariel::Fraction::operator>=(const float other)
     return *this >= Fraction(other);
 }
 
-
 Fraction ariel::operator+(float num, const Fraction &frac)
 {
     Fraction other_frac = Fraction(num);
@@ -212,8 +213,6 @@ Fraction ariel::operator/(const float num, const Fraction &frac)
     Fraction other_frac = Fraction(num);
     return other_frac.operator/(frac);
 }
-
-
 
 bool ariel::operator==(const float num, const Fraction &frac)
 {
@@ -246,8 +245,6 @@ bool ariel::operator>=(const float num, const Fraction &frac)
     return other_frac.operator>=(frac);
 }
 
-
-
 Fraction &Fraction::operator++()
 {
     this->numerator += this->denominator;
@@ -271,32 +268,31 @@ Fraction Fraction::operator--(int num)
     return this_frac;
 }
 
-std::ostream& ariel::operator<<(std::ostream& os, const Fraction& frac)
+ostream &ariel::operator<<(ostream &os, const Fraction &frac)
 {
     os << frac.getNumerator() << "/" << frac.getDenominator();
     return os;
 }
 
-std::istream& ariel::operator>>(std::istream& is, Fraction& frac)
+
+
+istream &ariel::operator>>(istream &is, Fraction &frac)
 {
-    int numerator, denominator;
-    char slash;
+    int numerator;
+    int denominator = 0;
 
-    is >> numerator >> slash >> denominator;
+    is >> numerator;
+    is >> denominator;
 
-    if (is && slash == '/')
+    if (denominator == 0)
     {
-        frac.setNumerator(numerator);
-        frac.setDenominator(denominator);
+        throw runtime_error("there are no argument");
     }
-    else
-    {
-        is.setstate(std::ios::failbit);
-    }
+    frac.setNumerator(numerator);
+    frac.setDenominator(denominator);
 
     return is;
 }
-
 
 int ariel::Fraction::gcd(int a, int b) const
 {
