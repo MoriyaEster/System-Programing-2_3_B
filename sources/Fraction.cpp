@@ -51,19 +51,21 @@ Fraction Fraction::operator+(const Fraction &other) const
         throw overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
     }
 
-    Fraction result(new_numerator, new_denominator);
-    result = reduceFraction(result);
-
-    return result;
+    return reduceFraction(Fraction(new_numerator, new_denominator));
 }
 
 Fraction Fraction::operator-(const Fraction &other) const
 {
     long long new_nume = ((long long)numerator * other.denominator) - ((long long)other.numerator * denominator);
     long long new_denom = (long long)denominator * other.denominator;
+    if (new_nume > INT_MAX || new_nume < INT_MIN || new_denom > INT_MAX || new_denom < INT_MIN)
+    {
+        throw std::overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
+    }
     Fraction new_frac = Fraction((int) new_nume,(int) new_denom);
     return reduceFraction(new_frac);
 }
+
 
 Fraction Fraction::operator*(const Fraction &other) const
 {
@@ -94,9 +96,18 @@ Fraction Fraction::operator/(const Fraction &other) const
     int other_nume = other.getNumerator();
     int other_denom = other.getDenominator();
 
-    Fraction new_frac = reduceFraction(Fraction(this_nume * other_denom, this_denom * other_nume));
+    long long new_nume = (long long)this_nume * other_denom;
+    long long new_denom = (long long)this_denom * other_nume;
+
+    if (new_nume > INT_MAX || new_nume < INT_MIN || new_denom > INT_MAX || new_denom < INT_MIN)
+    {
+        throw std::overflow_error("Overflow error: the result of the multiplication is out of range for an int.");
+    }
+
+    Fraction new_frac = reduceFraction(Fraction((int)new_nume, (int)new_denom));
     return new_frac;
 }
+
 
 bool Fraction::operator==(const Fraction &other) const
 {
@@ -111,13 +122,14 @@ bool Fraction::operator!=(const Fraction &other) const
     return !(*this == other);
 }
 
-bool Fraction::operator<(const Fraction &other) const
-{
-    int lcm = (denominator * other.denominator) / gcd(denominator, other.denominator);
-    int new_numerator = (numerator * (lcm / denominator));
-    int other_new_numerator = (other.numerator * (lcm / other.denominator));
-    return new_numerator < other_new_numerator;
+bool Fraction::operator<(const Fraction &other) const {
+
+    double this_value = (double)numerator / denominator;
+    double other_value = (double)other.numerator / other.denominator;
+    return this_value < other_value;
 }
+
+
 
 bool Fraction::operator>(const Fraction &other) const
 {
@@ -159,35 +171,37 @@ Fraction Fraction::operator/(const float other)
     return this->operator/(other_frac);
 }
 
-bool ariel::Fraction::operator==(const float other)
+bool Fraction::operator==(const float other)
 {
     return *this == Fraction(other);
 }
 
-bool ariel::Fraction::operator!=(const float other)
+bool Fraction::operator!=(const float other)
 {
     return !(*this == Fraction(other));
 }
 
-bool ariel::Fraction::operator<(const float other)
+bool Fraction::operator<(const float other)
 {
     return *this < Fraction(other);
 }
 
-bool ariel::Fraction::operator>(const float other)
+bool Fraction::operator>(const float other)
 {
     return *this > Fraction(other);
 }
 
-bool ariel::Fraction::operator<=(const float other)
+bool Fraction::operator<=(const float other)
 {
     return *this <= Fraction(other);
 }
 
-bool ariel::Fraction::operator>=(const float other)
+bool Fraction::operator>=(const float other)
 {
     return *this >= Fraction(other);
 }
+
+
 
 Fraction ariel::operator+(float num, const Fraction &frac)
 {
@@ -247,20 +261,33 @@ bool ariel::operator>=(const float num, const Fraction &frac)
 
 Fraction &Fraction::operator++()
 {
-    this->numerator += this->denominator;
+    long long new_nume = (long long)numerator + (long long)denominator;
+    if (new_nume > INT_MAX || new_nume < INT_MIN)
+    {
+        throw std::overflow_error("Overflow error: the result of the operation is out of range for an int.");
+    }
+    numerator = (int)new_nume;
     return *this;
 }
+
 Fraction &Fraction::operator--()
 {
-    this->numerator -= this->denominator;
+    long long new_nume = (long long)numerator - (long long)denominator;
+    if (new_nume > INT_MAX || new_nume < INT_MIN)
+    {
+        throw std::overflow_error("Overflow error: the result of the operation is out of range for an int.");
+    }
+    numerator = (int)new_nume;
     return *this;
 }
+
 Fraction Fraction::operator++(int num)
 {
     Fraction this_frac = *this;
     this->operator++();
     return this_frac;
 }
+
 Fraction Fraction::operator--(int num)
 {
     Fraction this_frac = *this;
